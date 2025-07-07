@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('lapangan_id')->constrained()->onDelete('cascade');
-            $table->date('tanggal');
-            $table->time('jam_mulai');
-            $table->integer('durasi_jam');
-            $table->integer('total_harga');
-            $table->enum('status', ['pending', 'diterima', 'ditolak'])->default('pending');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('field_id')->constrained('fields')->onDelete('cascade');
+            $table->date('booking_date');
+            $table->foreignId('start_time_slot_id')->constrained('time_slots')->onDelete('cascade');
+            $table->foreignId('end_time_slot_id')->constrained('time_slots')->onDelete('cascade');
+            $table->integer('total_hours');
+            $table->decimal('total_price', 10, 2);
+            $table->enum('status', ['pending', 'paid', 'cancelled', 'completed'])->default('pending');
+            $table->string('payment_proof')->nullable();
             $table->timestamps();
         });
     }
