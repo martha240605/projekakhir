@@ -4,95 +4,121 @@
 @section('header_title', 'Dashboard')
 
 @section('content')
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
-            <div>
-                <h3 class="text-gray-600 text-sm font-medium">Total Lapangan</h3>
-                <p class="text-3xl font-bold text-gray-900">{{ $totalFields }}</p>
-            </div>
-            <i class="fas fa-futbol text-5xl text-blue-500 opacity-25"></i>
-        </div>
-        <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
-            <div>
-                <h3 class="text-gray-600 text-sm font-medium">Booking Pending</h3>
-                <p class="text-3xl font-bold text-gray-900">{{ $pendingBookings }}</p>
-            </div>
-            <i class="fas fa-hourglass-half text-5xl text-yellow-500 opacity-25"></i>
-        </div>
-        <div class="bg-white rounded-lg shadow-md p-6 flex items-center justify-between">
-            <div>
-                <h3 class="text-gray-600 text-sm font-medium">Total Pengguna</h3>
-                <p class="text-3xl font-bold text-gray-900">{{ $totalUsers }}</p>
-            </div>
-            <i class="fas fa-users text-5xl text-green-500 opacity-25"></i>
-        </div>
-    </div>
+    <div class="space-y-8"> {{-- Menggunakan space-y untuk jarak vertikal antar bagian --}}
 
-    <div class="bg-white rounded-lg shadow-md p-6">
-        <h2 class="text-2xl font-bold text-gray-800 mb-4">Booking Terbaru</h2>
-        @if($latestBookings->isEmpty())
-            <p class="text-gray-600">Belum ada booking terbaru.</p>
-        @else
-            <div class="overflow-x-auto">
-                <table class="min-w-full leading-normal">
-                    <thead>
-                        <tr>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Booking ID
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Pengguna
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Lapangan
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Tanggal & Waktu
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Status
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Aksi
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($latestBookings as $booking)
-                            <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">#{{ $booking->id }}</p>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ $booking->user->name }}</p>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ $booking->field->name }}</p>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">
-                                        {{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('d M Y') }}<br>
-                                        {{ $booking->startTimeSlot->start_time->format('H:i') }} - {{ $booking->endTimeSlot->end_time->format('H:i') }}
-                                    </p>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <span class="relative inline-block px-3 py-1 font-semibold leading-tight">
-                                        <span aria-hidden="true" class="absolute inset-0 opacity-50 rounded-full
-                                            @if($booking->status == 'pending') bg-yellow-200 @elseif($booking->status == 'confirmed') bg-green-200 @elseif($booking->status == 'rejected' || $booking->status == 'canceled') bg-red-200 @else bg-gray-200 @endif
-                                        "></span>
-                                        <span class="relative capitalize">{{ str_replace('_', ' ', $booking->status) }}</span>
-                                    </span>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                    <a href="{{ route('admin.bookings.show', $booking->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">
-                                        <i class="fas fa-eye"></i> Detail
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+        {{-- Bagian Statistik Ringkasan --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {{-- Kartu Total Lapangan --}}
+            <div class="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between transition-transform transform hover:scale-[1.02] duration-200 ease-in-out border border-gray-100">
+                <div>
+                    <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider">Total Lapangan</h3>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">{{ $totalFields }}</p>
+                </div>
+                <i class="fas fa-futbol text-6xl text-blue-400 opacity-20"></i>
             </div>
-        @endif
+
+            {{-- Kartu Booking Pending --}}
+            <div class="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between transition-transform transform hover:scale-[1.02] duration-200 ease-in-out border border-gray-100">
+                <div>
+                    <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider">Booking Pending</h3>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">{{ $pendingBookings }}</p>
+                </div>
+                <i class="fas fa-hourglass-half text-6xl text-yellow-400 opacity-20"></i>
+            </div>
+
+            {{-- Kartu Total Pengguna --}}
+            <div class="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between transition-transform transform hover:scale-[1.02] duration-200 ease-in-out border border-gray-100">
+                <div>
+                    <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider">Total Pengguna</h3>
+                    <p class="text-4xl font-extrabold text-gray-900 mt-1">{{ $totalUsers }}</p>
+                </div>
+                <i class="fas fa-users text-6xl text-green-400 opacity-20"></i>
+            </div>
+        </div>
+
+        {{-- Bagian Tabel Booking Terbaru --}}
+        <div class="bg-white rounded-xl shadow-lg p-7 border border-gray-100">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Booking Terbaru</h2> {{-- Jarak bawah lebih konsisten --}}
+            @if($latestBookings->isEmpty())
+                <p class="text-gray-600 text-center py-8">Belum ada booking terbaru yang tersedia.</p> {{-- Pesan di tengah --}}
+            @else
+                <div class="overflow-x-auto -mx-1"> {{-- Margin negatif untuk padding tabel --}}
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Booking ID
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Pengguna
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Lapangan
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Tanggal & Waktu
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Status
+                                </th>
+                                <th scope="col" class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Aksi
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @foreach($latestBookings as $booking)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        #{{ $booking->id }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                                        <p class="font-semibold">{{ $booking->user->name }}</p>
+                                        <p class="text-gray-500 text-xs">{{ $booking->user->email }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                                        <p class="font-semibold">{{ $booking->field->name }}</p>
+                                        <p class="text-gray-500 text-xs">{{ $booking->field->type }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
+                                        <p>{{ \Carbon\Carbon::parse($booking->booking_date)->translatedFormat('d F Y') }}</p>
+                                        <p class="text-gray-500 text-xs">{{ $booking->startTimeSlot->start_time->format('H:i') }} - {{ $booking->endTimeSlot->end_time->format('H:i') }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        @php
+                                            $statusClass = '';
+                                            $statusTextClass = '';
+                                            switch ($booking->status) {
+                                                case 'pending':
+                                                    $statusClass = 'bg-yellow-100 text-yellow-800';
+                                                    break;
+                                                case 'confirmed':
+                                                    $statusClass = 'bg-green-100 text-green-800';
+                                                    break;
+                                                case 'rejected':
+                                                case 'canceled':
+                                                    $statusClass = 'bg-red-100 text-red-800';
+                                                    break;
+                                                default:
+                                                    $statusClass = 'bg-gray-100 text-gray-800';
+                                                    break;
+                                            }
+                                        @endphp
+                                        <span class="px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClass }}">
+                                            {{ ucwords(str_replace('_', ' ', $booking->status)) }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <a href="{{ route('admin.bookings.show', $booking->id) }}" class="text-blue-600 hover:text-blue-900 mr-3 inline-flex items-center">
+                                            <i class="fas fa-eye mr-1 text-sm"></i> Detail
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </div>
     </div>
 @endsection

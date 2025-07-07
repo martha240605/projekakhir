@@ -1,124 +1,112 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-gray-100"> {{-- Tambahkan h-full di html --}}
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Dashboard')</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    @stack('styles')
-    <style>
-        /* Custom scrollbar for sidebar (optional) */
-        .sidebar-scroll {
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
-        }
-        .sidebar-scroll::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
-        }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>@yield('title', config('app.name', 'Laravel'))</title>
+
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal flex">
+<body class="font-sans antialiased h-full flex flex-col"> {{-- Tambahkan h-full dan flex flex-col di body --}}
 
-    <aside class="w-64 bg-gray-800 text-white min-h-screen p-4 flex flex-col sidebar-scroll">
-        <div class="text-2xl font-bold text-center mb-10 mt-2">
-            <a href="{{ route('admin.dashboard') }}" class="hover:text-blue-300">Admin Panel</a>
-        </div>
-        <nav class="flex-grow">
-            <ul>
-                <li class="mb-2">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition duration-200
-                        {{ Request::routeIs('admin.dashboard') ? 'bg-gray-700' : '' }}">
-                        <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <a href="{{ route('admin.fields.index') }}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition duration-200
-                        {{ Request::routeIs('admin.fields.*') ? 'bg-gray-700' : '' }}">
-                        <i class="fas fa-futbol mr-3"></i> Lapangan
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <a href="{{ route('admin.bookings.index') }}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition duration-200
-                        {{ Request::routeIs('admin.bookings.*') ? 'bg-gray-700' : '' }}">
-                        <i class="fas fa-calendar-alt mr-3"></i> Booking
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <a href="{{ route('admin.time-slots.index') }}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition duration-200
-                        {{ Request::routeIs('admin.time-slots.*') ? 'bg-gray-700' : '' }}">
-                        <i class="fas fa-clock mr-3"></i> Slot Waktu
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <a href="{{ route('admin.users.index') }}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition duration-200
-                        {{ Request::routeIs('admin.users.*') ? 'bg-gray-700' : '' }}">
-                        <i class="fas fa-users mr-3"></i> Pengguna
-                    </a>
-                </li>
-            </ul>
-        </nav>
-        <div class="mt-auto">
-            <hr class="border-gray-700 my-4">
-            <ul>
-                <li class="mb-2">
-                    <a href="{{ route('user.home') }}" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition duration-200">
-                        <i class="fas fa-home mr-3"></i> Ke Halaman User
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="flex items-center p-3 rounded-lg hover:bg-gray-700 transition duration-200 w-full text-left">
-                            <i class="fas fa-sign-out-alt mr-3"></i> Logout
-                        </button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </aside>
+    {{-- Main Container (Mengisi Seluruh Tinggi Layar) --}}
+    <div class="min-h-screen bg-gray-100 flex flex-col">
 
-    <div class="flex-1 flex flex-col overflow-hidden">
-        <header class="flex justify-between items-center bg-white p-4 shadow-md z-10">
-            <div class="text-xl font-semibold text-gray-800">
-                @yield('header_title', 'Dashboard')
-            </div>
-            <div class="flex items-center">
-                <span class="text-gray-700 mr-4">{{ Auth::user()->name }} (Admin)</span>
-                <img class="h-10 w-10 rounded-full object-cover" src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&color=7F9CF5&background=EBF4FF" alt="Admin Avatar">
+        {{-- Header (Top Navbar/Bar) - TIDAK BERGERAK --}}
+        <header class="bg-white shadow flex-shrink-0">
+            <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                        @yield('header_title', 'Dashboard')
+                    </h2>
+                    {{-- Dropdown Pengguna Breeze --}}
+                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                    <div>{{ Auth::user()->name }}</div>
+                                    <div class="ms-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('user.profile.edit')">
+                                    {{ __('Profile') }}
+                                </x-dropdown-link>
+
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link :href="route('logout')"
+                                            onclick="event.preventDefault();
+                                                        this.closest('form').submit();">
+                                        {{ __('Log Out') }}
+                                    </x-dropdown-link>
+                                </form>
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
-            @if(session('success'))
-                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
-                    {{ session('success') }}
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-                    {{ session('error') }}
-                </div>
-            @endif
-            @if ($errors->any())
-                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
-                    <p><strong>Oops! Ada beberapa masalah:</strong></p>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+        {{-- Konten Utama Halaman (Sidebar + Content Area) --}}
+        <div class="flex flex-1 overflow-hidden"> {{-- flex-1 agar mengambil sisa tinggi, overflow-hidden agar scroll ditangani di dalamnya --}}
 
-            @yield('content')
-        </main>
+            {{-- Sidebar Admin - TIDAK BERGERAK --}}
+            <aside class="w-64 bg-gray-800 text-white flex-shrink-0 overflow-y-auto"> {{-- flex-shrink-0 agar ukuran tetap, overflow-y-auto jika isi sidebar panjang --}}
+                <div class="p-4 border-b border-gray-700">
+                    <h1 class="text-2xl font-bold">Admin Panel</h1>
+                </div>
+                <nav class="mt-5">
+                    <a href="{{ route('admin.dashboard') }}" class="block py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                    </a>
+                    <a href="{{ route('admin.fields.index') }}" class="block py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
+                        <i class="fas fa-futbol mr-2"></i> Manajemen Lapangan
+                    </a>
+                    <a href="{{ route('admin.bookings.index') }}" class="block py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
+                        <i class="fas fa-book mr-2"></i> Manajemen Booking
+                    </a>
+                    <a href="{{ route('admin.users.index') }}" class="block py-2 px-4 text-gray-300 hover:bg-gray-700 hover:text-white transition duration-200">
+                        <i class="fas fa-users mr-2"></i> Manajemen Pengguna
+                    </a>
+                    {{-- Tambahkan link sidebar lainnya --}}
+                </nav>
+            </aside>
 
-        <footer class="bg-white p-4 shadow-inner text-center text-gray-600 border-t">
-            &copy; {{ date('Y') }} Admin Panel. All rights reserved.
+            {{-- Area Konten Yang Bisa Di-scroll --}}
+            <main class="flex-1 p-6 overflow-y-auto"> {{-- flex-1 mengambil sisa lebar, p-6 padding, overflow-y-auto agar konten bisa di-scroll --}}
+                {{-- Flash Messages --}}
+                @if(session('success'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ session('success') }}</span>
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                        <span class="block sm:inline">{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                @yield('content')
+            </main>
+        </div>
+
+        {{-- Footer - TIDAK BERGERAK --}}
+        <footer class="bg-gray-800 text-gray-400 text-center py-4 text-sm flex-shrink-0">
+            &copy; {{ date('Y') }} {{ config('app.name', 'Your App') }}. All rights reserved.
         </footer>
     </div>
 
-    @stack('scripts')
 </body>
 </html>

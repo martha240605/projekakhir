@@ -1,91 +1,87 @@
 @extends('layouts.admin')
 
-@section('title', 'Manajemen Lapangan')
-@section('header_title', 'Daftar Lapangan')
+@section('title', 'Tambah Lapangan Baru')
+@section('header_title', 'Tambah Lapangan')
 
 @section('content')
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800">Manajemen Lapangan</h2>
-        <a href="{{ route('admin.fields.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
-            <i class="fas fa-plus-circle mr-2"></i> Tambah Lapangan
-        </a>
-    </div>
+    <div class="bg-gray-800 shadow-lg rounded-lg p-6 mb-8 text-gray-200">
+        <h2 class="text-2xl font-bold text-white mb-6">Tambah Lapangan Baru</h2>
 
-    @if($fields->isEmpty())
-        <p class="text-gray-600">Belum ada lapangan yang terdaftar.</p>
-    @else
-        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="min-w-full leading-normal">
-                    <thead>
-                        <tr>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Gambar
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Nama Lapangan
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Tipe
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Harga/Jam
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Status
-                            </th>
-                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Aksi
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($fields as $field)
-                            <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    @if($field->image)
-                                        <img src="{{ asset('storage/' . $field->image) }}" alt="{{ $field->name }}" class="w-16 h-12 object-cover rounded-md">
-                                    @else
-                                        <img src="https://via.placeholder.com/64x48?text=No+Img" alt="No Image" class="w-16 h-12 object-cover rounded-md">
-                                    @endif
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ $field->name }}</p>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">{{ $field->type ?? '-' }}</p>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <p class="text-gray-900 whitespace-no-wrap">Rp{{ number_format($field->price_per_hour, 0, ',', '.') }}</p>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                    <span class="relative inline-block px-3 py-1 font-semibold leading-tight">
-                                        <span aria-hidden="true" class="absolute inset-0 opacity-50 rounded-full
-                                            @if($field->status == 'available') bg-green-200 @elseif($field->status == 'maintenance') bg-red-200 @else bg-gray-200 @endif
-                                        "></span>
-                                        <span class="relative capitalize">{{ $field->status }}</span>
-                                    </span>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-center">
-                                    <a href="{{ route('admin.fields.edit', $field->id) }}" class="text-blue-600 hover:text-blue-900 mr-3">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
-                                    <form action="{{ route('admin.fields.destroy', $field->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus lapangan ini?');">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900">
-                                            <i class="fas fa-trash"></i> Hapus
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+        <form action="{{ route('admin.fields.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+
+            <div class="mb-4">
+                <label for="name" class="block text-gray-300 text-sm font-bold mb-2">Nama Lapangan:</label>
+                <input type="text" name="name" id="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600 placeholder-gray-400" placeholder="Contoh: Lapangan Futsal A" required>
+                @error('name')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                @enderror
             </div>
-            <div class="px-5 py-5 bg-white border-t flex flex-col xs:flex-row items-center xs:justify-between">
-                {{ $fields->links() }}
+
+            <div class="mb-4">
+                <label for="type" class="block text-gray-300 text-sm font-bold mb-2">Tipe Lapangan:</label>
+                <select name="type" id="type" class="shadow border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600" required>
+                    <option value="">Pilih Tipe</option>
+                    <option value="Futsal">Futsal</option>
+                    <option value="Badminton">Badminton</option>
+                    <option value="Basket">Basket</option>
+                    <option value="Tenis">Tenis</option>
+                    <!-- Tambahkan tipe lain jika ada -->
+                </select>
+                @error('type')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                @enderror
             </div>
-        </div>
-    @endif
+
+            <div class="mb-4">
+                <label for="price_per_hour" class="block text-gray-300 text-sm font-bold mb-2">Harga per Jam:</label>
+                <input type="number" name="price_per_hour" id="price_per_hour" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600 placeholder-gray-400" placeholder="Contoh: 50000" required min="0">
+                @error('price_per_hour')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="description" class="block text-gray-300 text-sm font-bold mb-2">Deskripsi:</label>
+                <textarea name="description" id="description" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600 placeholder-gray-400" placeholder="Deskripsi singkat tentang lapangan..."></textarea>
+                @error('description')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mb-4">
+                <label for="image" class="block text-gray-300 text-sm font-bold mb-2">Gambar Lapangan:</label>
+                <input type="file" name="image" id="image" class="block w-full text-sm text-gray-400
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-lime-500 file:text-white
+                    hover:file:bg-lime-600 cursor-pointer"
+                    accept="image/*">
+                @error('image')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="mb-6">
+                <label for="status" class="block text-gray-300 text-sm font-bold mb-2">Status:</label>
+                <select name="status" id="status" class="shadow border rounded w-full py-2 px-3 text-gray-900 leading-tight focus:outline-none focus:shadow-outline bg-gray-700 border-gray-600" required>
+                    <option value="available">Available</option>
+                    <option value="maintenance">Maintenance</option>
+                </select>
+                @error('status')
+                    <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="flex items-center justify-between">
+                <button type="submit" class="bg-lime-500 hover:bg-lime-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300">
+                    Simpan Lapangan
+                </button>
+                <a href="{{ route('admin.fields.index') }}" class="inline-block align-baseline font-bold text-sm text-gray-400 hover:text-gray-200">
+                    Batal
+                </a>
+            </div>
+        </form>
+    </div>
 @endsection

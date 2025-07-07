@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('fields', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['futsal', 'badminton']);
+            $table->enum('type', ['Futsal', 'Badminton', 'Basket', 'Tenis']);
             $table->text('description')->nullable();
             $table->decimal('price_per_hour', 10, 2);
             $table->string('image')->nullable();
