@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\TimeSlotController as AdminTimeSlotController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\Admin\ComprehensiveReportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,3 +98,11 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->name('admi
 
 // Auth Routes (Breeze default)
 require __DIR__.'/auth.php';
+
+
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
+    // ... rute yang sudah ada seperti dashboard, fields, bookings, users
+
+    // Rute untuk Laporan Komprehensif
+    Route::get('/reports/comprehensive', [ComprehensiveReportController::class, 'generate'])->name('reports.comprehensive');
+});

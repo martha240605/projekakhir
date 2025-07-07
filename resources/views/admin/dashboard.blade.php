@@ -9,30 +9,30 @@
         {{-- Bagian Statistik Ringkasan --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {{-- Kartu Total Lapangan --}}
-            <div class="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between transition-transform transform hover:scale-[1.02] duration-200 ease-in-out border border-gray-100">
+            <div class="bg-gradient-to-r from-green-800 to-black rounded-xl shadow-lg p-6 flex items-center justify-between transition-transform transform hover:scale-[1.02] duration-200 ease-in-out border border-green-700">
                 <div>
-                    <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider">Total Lapangan</h3>
-                    <p class="text-4xl font-extrabold text-gray-900 mt-1">{{ $totalFields }}</p>
+                    <h3 class="text-white text-sm font-medium uppercase tracking-wider">Total Lapangan</h3>
+                    <p class="text-4xl font-extrabold text-white mt-1">{{ $totalFields }}</p>
                 </div>
-                <i class="fas fa-futbol text-6xl text-blue-400 opacity-20"></i>
+                <i class="fas fa-futbol text-6xl text-white opacity-20"></i>
             </div>
 
             {{-- Kartu Booking Pending --}}
-            <div class="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between transition-transform transform hover:scale-[1.02] duration-200 ease-in-out border border-gray-100">
+            <div class="bg-gradient-to-r from-green-800 to-black rounded-xl shadow-lg p-6 flex items-center justify-between transition-transform transform hover:scale-[1.02] duration-200 ease-in-out border border-green-700">
                 <div>
-                    <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider">Booking Pending</h3>
-                    <p class="text-4xl font-extrabold text-gray-900 mt-1">{{ $pendingBookings }}</p>
+                    <h3 class="text-white text-sm font-medium uppercase tracking-wider">Booking Pending</h3>
+                    <p class="text-4xl font-extrabold text-white mt-1">{{ $pendingBookings }}</p>
                 </div>
-                <i class="fas fa-hourglass-half text-6xl text-yellow-400 opacity-20"></i>
+                <i class="fas fa-hourglass-half text-6xl text-white opacity-20"></i>
             </div>
 
             {{-- Kartu Total Pengguna --}}
-            <div class="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between transition-transform transform hover:scale-[1.02] duration-200 ease-in-out border border-gray-100">
+            <div class="bg-gradient-to-r from-green-800 to-black rounded-xl shadow-lg p-6 flex items-center justify-between transition-transform transform hover:scale-[1.02] duration-200 ease-in-out border border-green-700">
                 <div>
-                    <h3 class="text-gray-500 text-sm font-medium uppercase tracking-wider">Total Pengguna</h3>
-                    <p class="text-4xl font-extrabold text-gray-900 mt-1">{{ $totalUsers }}</p>
+                    <h3 class="text-white text-sm font-medium uppercase tracking-wider">Total Pengguna</h3>
+                    <p class="text-4xl font-extrabold text-white mt-1">{{ $totalUsers }}</p>
                 </div>
-                <i class="fas fa-users text-6xl text-green-400 opacity-20"></i>
+                <i class="fas fa-users text-6xl text-white opacity-20"></i>
             </div>
         </div>
 
@@ -87,7 +87,6 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         @php
                                             $statusClass = '';
-                                            $statusTextClass = '';
                                             switch ($booking->status) {
                                                 case 'pending':
                                                     $statusClass = 'bg-yellow-100 text-yellow-800';
